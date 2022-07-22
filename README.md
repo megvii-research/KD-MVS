@@ -1,7 +1,7 @@
-<!-- # KD-MVS: Knowledge Distillation Based Self-supervised Learning for Multi-view Stereo -->
-# KD-MVS
+# KD-MVS: Knowledge Distillation Based Self-supervised Learning for Multi-view Stereo
+<!-- # KD-MVS -->
 
-### [Paper]() | [Project Page]() | [Data](https://drive.google.com/file/d/1aM2_o5kQJbaYVkzrzQhgIpbBkrLSeCYd/view?usp=sharing) | [Checkpoints](https://drive.google.com/drive/folders/1Ctx_zADvjgYpfgtUepkqh31bbs4IotJq?usp=sharing)
+### [Paper](https://arxiv.org/abs/2207.10425) | [Project Page](https://dingyikang.github.io/kdmvs.github.io/) | [Data](https://drive.google.com/file/d/1aM2_o5kQJbaYVkzrzQhgIpbBkrLSeCYd/view?usp=sharing) | [Checkpoints](https://drive.google.com/drive/folders/1Ctx_zADvjgYpfgtUepkqh31bbs4IotJq?usp=sharing)
 
 <!-- This repo is under constructing. -->
 
@@ -41,7 +41,7 @@ For DTU testing set, download the preprocessed [DTU testing data](https://drive.
 
 ## Training
 
-### Unsupvised training
+### Unsupervised training
 Set the configuration in ``scripts/run_train_unsup.sh`` as:
 * Set ``DATASET_DIR`` as the path of DTU training set.
 * Set ``LOG_DIR`` as the path to save the checkpoints.
@@ -85,16 +85,20 @@ bash scripts/run_test_dtu.sh
 
 <!-- The instruction of installing and compiling `fusibile` fusion method can be found [here](https://github.com/kysucix/fusibile). -->
 
-To get quantitative results of the fused point clouds from the official MATLAB evaluation tools, you can refer to [TransMVNet](https://github.com/MegviiRobot/TransMVSNet).
+To get quantitative results of the fused point clouds from the official MATLAB evaluation tools, you can refer to [TransMVSNet](https://github.com/MegviiRobot/TransMVSNet).
 
 
 
-<!--
 ## Citation
 ```bibtex
-
+@inproceedings{ding2022kdmvs,
+  title={KD-MVS: Knowledge Distillation Based Self-supervised Learning for Multi-view Stereo},
+  author={Ding, Yikang and Zhu, Qingtian and Liu, Xiangyue and Yuan, Wentao and Zhang, Haotian  and Zhang, Chi},
+  booktitle={European Conference on Computer Vision},
+  year={2022},
+  organization={Springer}
+}
 ```
--->
 
 ## Acknowledgments
 We borrow some code from [TransMVSNet](https://github.com/MegviiRobot/TransMVSNet) and [U-MVS](https://github.com/ToughStoneX/U-MVS). We thank the authors for releasing the source code.
