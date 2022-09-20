@@ -5,6 +5,8 @@
 
 <!-- This repo is under constructing. -->
 
+**Tips**: If you meet any problems when reproduce our results, please contact Yikang Ding (dyk20@mails.tsinghua.edu.cn). We are happy to help you solve the problems and share our experience.
+
 ## Installation
 
 Clone this repo:
