@@ -34,8 +34,10 @@ class MVSDataset(Dataset):
                     ref_view = int(f.readline().rstrip())
                     src_views = [int(x) for x in f.readline().rstrip().split()[1::2]]
                     # light conditions 0-6
-                    for light_idx in range(7):
-                        metas.append((scan, light_idx, ref_view, src_views))
+                    light_idx = 6
+                    metas.append((scan, light_idx, ref_view, src_views))
+                    # for light_idx in range(7):
+                    #     metas.append((scan, light_idx, ref_view, src_views))
         print("dataset", self.mode, "metas:", len(metas))
         return metas
 

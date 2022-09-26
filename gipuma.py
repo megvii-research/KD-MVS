@@ -189,14 +189,24 @@ def depth_map_fusion(point_folder, fusibile_exe_path, disp_thresh, num_consisten
     return
 
 
-def gipuma_filter(testlist, outdir, pcd_dir, prob_threshold, disp_threshold, num_consistent, fusibile_exe_path):
+def gipuma_filter(testlist, outdir, prob_threshold, disp_threshold, num_consistent, fusibile_exe_path):
+    
+    if os.path.isdir(os.path.join(outdir, 'gipuma_pcd')):
+        cmd = f"rm -r {os.path.join(outdir, 'gipuma_pcd')}"
+        os.system(cmd)
+    os.makedirs(os.path.join(outdir, 'gipuma_pcd'), exist_ok=True)
 
     for scan in testlist:
 
         out_folder = os.path.join(outdir, scan)
         dense_folder = out_folder
-
         point_folder = os.path.join(dense_folder, 'points_mvsnet')
+        
+        if os.path.isdir(point_folder):
+            cmd = f"rm -r {point_folder}"
+            os.system(cmd)
+
+
         if not os.path.isdir(point_folder):
             os.mkdir(point_folder)
 
@@ -212,19 +222,5 @@ def gipuma_filter(testlist, outdir, pcd_dir, prob_threshold, disp_threshold, num
         print('Run depth map fusion & filter')
         depth_map_fusion(point_folder, fusibile_exe_path, disp_threshold, num_consistent)
 
-        # move pcd results to target path
-        subfolder_list = os.listdir(point_folder)
-        for sub in subfolder_list:
-            if "consis" in sub:
-                final_sub = sub
-        source_pcd = os.path.join(point_folder, final_sub, 'final3d_model.ply')
-        # For DTU
-        # scan_id = int(scan[4:])
-        # target_pcd = os.path.join(pcd_dir, 'mvsnet{:0>3}_l3.ply'.format(scan_id))
-        # For other dataset
-        target_pcd = os.path.join(pcd_dir, '{}.ply'.format(scan))
-        os.system(f"mv {source_pcd} {target_pcd}")
-
-        # remove the gipuma results
-        cmd = f"rm -r {point_folder}"
+        cmd = f"mv {out_folder}/points_mvsnet/consis*/final3d_model.ply {os.path.join(outdir, 'gipuma_pcd')}/mvsnet{int(scan.split('n')[-1]):03}_l3.ply"
         os.system(cmd)
