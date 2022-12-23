@@ -1,6 +1,6 @@
 ## KD-MVS: Knowledge Distillation Based Self-supervised Learning for Multi-view Stereo
 
-Code for [KD-MVS: Knowledge Distillation Based Self-supervised Learning for Multi-view Stereo](https://arxiv.org/abs/2207.10425)
+Code for paper [KD-MVS: Knowledge Distillation Based Self-supervised Learning for Multi-view Stereo](https://arxiv.org/abs/2207.10425)
 
 **Tips**: If you meet any problems when reproduce our results, please contact Yikang Ding (dyk20@mails.tsinghua.edu.cn). We are happy to help you solve the problems and share our experience.
 
