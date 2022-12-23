@@ -190,7 +190,7 @@ def depth_map_fusion(point_folder, fusibile_exe_path, disp_thresh, num_consisten
 
 
 def gipuma_filter(testlist, outdir, prob_threshold, disp_threshold, num_consistent, fusibile_exe_path):
-    
+
     if os.path.isdir(os.path.join(outdir, 'gipuma_pcd')):
         cmd = f"rm -r {os.path.join(outdir, 'gipuma_pcd')}"
         os.system(cmd)
@@ -201,7 +201,7 @@ def gipuma_filter(testlist, outdir, prob_threshold, disp_threshold, num_consiste
         out_folder = os.path.join(outdir, scan)
         dense_folder = out_folder
         point_folder = os.path.join(dense_folder, 'points_mvsnet')
-        
+
         if os.path.isdir(point_folder):
             cmd = f"rm -r {point_folder}"
             os.system(cmd)

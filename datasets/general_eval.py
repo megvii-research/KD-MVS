@@ -120,9 +120,7 @@ class MVSDataset(Dataset):
         proj_matrices = []
 
         for i, vid in enumerate(view_ids):
-            img_filename = os.path.join(self.datapath, '{}/images_6/{:0>8}.jpg'.format(scan, vid))
-            if not os.path.exists(img_filename):
-                img_filename = os.path.join(self.datapath, '{}/images/{:0>8}.jpg'.format(scan, vid))
+            img_filename = os.path.join(self.datapath, '{}/images/{:0>8}.jpg'.format(scan, vid))
 
             proj_mat_filename = os.path.join(self.datapath, '{}/cams/{:0>8}_cam.txt'.format(scan, vid))
 

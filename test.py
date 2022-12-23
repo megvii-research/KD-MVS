@@ -11,8 +11,10 @@ from multiprocessing import Pool
 from functools import partial
 from torch.utils.data import DataLoader
 from models.cas_mvsnet import CascadeMVSNet
+# from models.cas_mvsnet import CascadeMVSNet_uncertainty as CascadeMVSNet
+
 from tools.utils import *
-from tools.gipuma import gipuma_filter
+from gipuma import gipuma_filter
 from datasets import find_dataset_def
 from datasets.data_io import read_pfm, save_pfm
 
@@ -31,7 +33,7 @@ parser.add_argument('--outdir', default='./outputs', help='output dir')
 parser.add_argument('--display', action='store_true', help='display depth images and masks')
 parser.add_argument('--share_cr', action='store_true', help='whether share the cost volume regularization')
 parser.add_argument('--ndepths', type=str, default="48,32,8", help='ndepths')
-parser.add_argument('--depth_inter_r', type=str, default="4,2,1", help='depth_intervals_ratio')
+parser.add_argument('--depth_inter_r', type=str, default="4,1,0.4", help='depth_intervals_ratio')
 parser.add_argument('--cr_base_chs', type=str, default="8,8,8", help='cost regularization base channels')
 parser.add_argument('--grad_method', type=str, default="detach", choices=["detach", "undetach"], help='grad method')
 parser.add_argument('--interval_scale', type=float, required=True, help='the depth interval scale')
@@ -39,23 +41,29 @@ parser.add_argument('--num_view', type=int, default=5, help='num of view')
 parser.add_argument('--max_h', type=int, default=864, help='testing max h')
 parser.add_argument('--max_w', type=int, default=1152, help='testing max w')
 parser.add_argument('--fix_res', action='store_true', help='scene all using same res')
+parser.add_argument('--high_res', type=int, default=1, help='using high-resolution')
 parser.add_argument('--num_worker', type=int, default=16, help='depth_filer worker')
 parser.add_argument('--save_freq', type=int, default=20, help='save freq of local pcd')
-parser.add_argument('--filter_method', type=str, default='normal', choices=["gipuma", "normal", "dynamic"], help="filter method")
+parser.add_argument('--filter_method', type=str, default='gipuma', choices=["gipuma", "normal", "dynamic"], help="filter method")
 #filter
 parser.add_argument('--conf', type=float, default=0.05, help='prob confidence')
 parser.add_argument('--thres_view', type=int, default=5, help='threshold of num view')
 #filter by gimupa
 parser.add_argument('--fusibile_exe_path', type=str, default='../fusibile/fusibile')
 parser.add_argument('--prob_threshold', type=float, default='0.01')
-parser.add_argument('--disp_threshold', type=float, default='0.25')
-parser.add_argument('--num_consistent', type=float, default='3')
+parser.add_argument('--disp_threshold', type=float, default='0.10')
+parser.add_argument('--num_consistent', type=float, default='2')
+
+parser.add_argument('--pred_depth', type=bool, default=True)
 # parse arguments and check
 args = parser.parse_args()
 print("argv:", sys.argv[1:])
 print_args(args)
 if args.testpath_single_scene:
     args.testpath = os.path.dirname(args.testpath_single_scene)
+
+if args.high_res:
+    args.max_h, args.max_w = 1200, 1600
 
 num_stage = len([int(nd) for nd in args.ndepths.split(",") if nd])
 
@@ -409,14 +417,16 @@ if __name__ == '__main__':
             if not args.testpath_single_scene else [os.path.basename(args.testpath_single_scene)]
 
     # step1. save all the depth maps and the masks in outputs directory
-    save_depth(testlist)
+    if args.pred_depth:
+        save_depth(testlist)
 
     # # step2. filter saved depth maps with photometric confidence maps and geometric constraints
     if args.filter_method == 'dynamic':
         pass
     elif args.filter_method == "normal":
         #support multi-processing, the default number of worker is 16
-        pcd_filter(testlist, args.num_worker)
+        # pcd_filter(testlist, args.num_worker)
+        print("***** Recommond using gipuma fuse. ******")
     else:
         gipuma_filter(testlist, args.outdir, args.prob_threshold, args.disp_threshold, args.num_consistent,
                       args.fusibile_exe_path)

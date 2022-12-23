@@ -44,7 +44,7 @@ parser.add_argument('--pin_m', action='store_true', help='data loader pin memory
 parser.add_argument("--local_rank", type=int, default=0)
 parser.add_argument('--share_cr', action='store_true', help='whether share the cost volume regularization')
 parser.add_argument('--ndepths', type=str, default="48,32,8", help='ndepths')
-parser.add_argument('--depth_inter_r', type=str, default="4,2,1", help='depth_intervals_ratio')
+parser.add_argument('--depth_inter_r', type=str, default="4,1,0.5", help='depth_intervals_ratio')
 parser.add_argument('--dlossw', type=str, default="0.5,1.0,2.0", help='depth loss weight for different stage')
 parser.add_argument('--cr_base_chs', type=str, default="8,8,8", help='cost regularization base channels')
 parser.add_argument('--grad_method', type=str, default="detach", choices=["detach", "undetach"], help='grad method')
@@ -84,7 +84,7 @@ def train(model, model_loss, optimizer, TrainImgLoader, TestImgLoader, start_epo
                     print(
                        "Epoch {}/{}, Iter {}/{}, lr {:.6f}, train loss = {:.3f}, depth loss = {:.3f}, kl loss = {:.3f}, approx_kl = {:.3f}, time = {:.3f}".format(
                            epoch_idx, args.epochs, batch_idx, len(TrainImgLoader),
-                           optimizer.param_groups[0]["lr"], 
+                           optimizer.param_groups[0]["lr"],
                            loss,
                            scalar_outputs['depth_loss'],
                            scalar_outputs['kl_loss'],
@@ -131,12 +131,12 @@ def train_sample(model, model_loss, optimizer, sample, args):
     num_stage = len([int(nd) for nd in args.ndepths.split(",") if nd])
     depth_gt = depth_gt_ms["stage{}".format(num_stage)]
     mask = mask_ms["stage{}".format(num_stage)]
-    
+
     try:
         outputs = model(sample_cuda["imgs"], sample_cuda["proj_matrices"], sample_cuda["depth_values"])
         depth_est = outputs["depth"]
 
-        loss, depth_loss, kl, approx_kl, depth_wta = model_loss(outputs, depth_gt_ms, 
+        loss, depth_loss, kl, approx_kl, depth_wta = model_loss(outputs, depth_gt_ms,
                                                                    sigma_ms, mask_ms, dlossw=[float(e) for e in args.dlossw.split(",") if e])
 
         if np.isnan(loss.item()):
@@ -198,7 +198,7 @@ def test_sample_depth(model, model_loss, sample, args):
     outputs = model_eval(sample_cuda["imgs"], sample_cuda["proj_matrices"], sample_cuda["depth_values"])
     depth_est = outputs["depth"]
 
-    loss, depth_loss, kl, approx_kl, depth_wta = model_loss(outputs, depth_gt_ms, 
+    loss, depth_loss, kl, approx_kl, depth_wta = model_loss(outputs, depth_gt_ms,
                                                                 sigma_ms, mask_ms, dlossw=[float(e) for e in args.dlossw.split(",") if e])
 
     scalar_outputs = {"loss": loss,
